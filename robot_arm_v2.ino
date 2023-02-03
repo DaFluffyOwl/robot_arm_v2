@@ -13,6 +13,11 @@ float* coord_ptr2;
 
 int Speed = 12;
 
+const int stepsPerRevolution = 2048;
+Stepper myStepper(stepsPerRevolution, 6, 10, 9, 11);
+
+
+
 
 void setup() {
 
@@ -47,26 +52,8 @@ void loop() {
     X = *(coord_ptr2 + 2);  // Yaw
     Z = *coord_ptr;         // Roll 
 
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    myStepper.step(stepsPerRevolution);
+    delay(200);
 }
 
 float* AnglesGyro1(int Delay) {
