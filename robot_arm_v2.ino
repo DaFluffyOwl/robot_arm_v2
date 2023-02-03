@@ -1,22 +1,20 @@
 #include <Stepper.h>
 
-const int stepsPerRevolution = 32;
-Stepper myStepper(stepsPerRevolution, 6, 9, 10, 11);
-
+const int stepsPerRevolution = 2048;
+Stepper myStepper(stepsPerRevolution, 6, 10, 9, 11);
 void setup() {
     Serial.begin(9600);
+    myStepper.setSpeed(12);
 
 }
 
 void loop() {
 
-    myStepper.setSpeed(700);
     Serial.println("clockwise");
-    myStepper.step(stepsPerRevolution*64);
-    delay(100);
+    myStepper.step(stepsPerRevolution);
+    delay(200);
 
-    // step one revolution in the other direction:
     Serial.println("counterclockwise");
-    myStepper.step(-stepsPerRevolution*64);
-    delay(100);
+    myStepper.step(-stepsPerRevolution);
+    delay(200);
 }
