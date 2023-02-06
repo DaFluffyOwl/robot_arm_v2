@@ -42,7 +42,7 @@ void loop() {
     coord_ptr = AnglesGyro(10);
 
     Y = *(coord_ptr + 1);        // Pitch
-    X = *(coord_ptr);  // Yaw
+    X = *(coord_ptr);            // Yaw
     Z = *(coord_ptr + 2);        // Roll 
 
     Serial.print("X: ");
