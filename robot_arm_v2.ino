@@ -56,22 +56,44 @@ void loop() {
     delay(200);
 }
 
-float* AnglesGyro1(int Delay) {
-  gyro1.update();
-  static float Gyro_array[3];
-  Gyro_array[0] = gyro1.getAngleX();
-  Gyro_array[1] = gyro1.getAngleY();
-  Gyro_array[2] = gyro1.getAngleZ();
-  delay(Delay);
-  return Gyro_array;
-}
 
-float* AnglesGyro2(int Delay) {
+float AnglesGyro(int num, float val, int Delay, char 'i') {
   gyro2.update();
-  static float Gyro_array[3];
-  Gyro_array[0] = gyro2.getAngleX();
-  Gyro_array[1] = gyro2.getAngleY();
-  Gyro_array[2] = gyro2.getAngleZ();
+
+  if(num == 2) {
+    switch(i)
+    {
+    case i = 'z':
+      gyro2.getAngleZ();
+      break;
+    
+    case i = 'y':
+      gyro2.getAngleY();
+      break;
+
+    case i = 'x':
+      gyro2.getAngleX();
+      break;
+    }
+  }
+
+  if(num == 1) {
+    switch(i)
+    {
+    case i = 'z':
+      gyro1.getAngleZ();
+      break;
+    
+    case i = 'y':
+      gyro1.getAngleY();
+      break;
+
+    case i = 'x':
+      gyro1.getAngleX();
+      break;
+    }
+  }
+
   delay(Delay);
-  return Gyro_array;
+  return val;
 }
