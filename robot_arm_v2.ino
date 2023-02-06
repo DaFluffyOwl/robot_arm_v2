@@ -2,76 +2,66 @@
 #include <MPU6050_light.h>
 #include <Wire.h>
 
-MPU6050 gyro1(Wire);
-MPU6050 gyro2(Wire);
+MPU6050 gyro(Wire);
 
-int Gyro1_pin = 4;
-int Gyro2_pin = 5;
+int gyro_pin = 4;
 
 float* coord_ptr;
-float* coord_ptr2;
 
 int Speed = 12;
+int X, Y, Z;
 
 const int stepsPerRevolution = 2048;
-Stepper myStepper(stepsPerRevolution, 6, 10, 9, 11);
+Stepper xStepper(stepsPerRevolution, 6, 10, 9, 11);
 
 
 
 
 void setup() {
 
-    myStepper.setSpeed(Speed);
+    xStepper.setSpeed(Speed);
 
-    pinMode(Gyro1_pin, OUTPUT);
-    digitalWrite(Gyro1_pin, LOW);
+    pinMode(gyro_pin, OUTPUT);
+    digitalWrite(gyro_pin, LOW);
 
-    gyro1.setAddress(0x68);
+    gyro.setAddress(0x68);
 
-    gyro1.begin();
-    gyro1.calcOffsets(0, 0);
-
-    pinMode(Gyro2_pin, OUTPUT);
-    digitalWrite(Gyro2_pin, HIGH);
-
-    gyro2.setAddress(0x69);
-
-    gyro2.begin();
-    gyro2.calcOffsets(0, 0);
+    gyro.begin();
+    Serial.print("Gyro Calibrating, do not move..");
+    gyro.calcOffsets(0, 0);
+    Serial.println("Done!");
 
     Wire.begin();
     Serial.begin(9600);
 
+    Serial.println("Motor set");
 }
 
 void loop() {
 
-    coord_ptr = AnglesGyro1(10);
-    coord_ptr2 = AnglesGyro2(10);
-    Y = *coord_ptr2;        // Pitch
-    X = *(coord_ptr2 + 2);  // Yaw
-    Z = *coord_ptr;         // Roll 
+    coord_ptr = AnglesGyro(10);
 
-    myStepper.step(stepsPerRevolution);
-    delay(200);
+    Y = *(coord_ptr + 1);        // Pitch
+    X = *(coord_ptr);            // Yaw
+    Z = *(coord_ptr + 2);        // Roll 
+
+    Serial.print("X: ");
+    Serial.print(X);
+    Serial.print("  Y: ");
+    Serial.print(Y);
+    Serial.print("  Z: ");
+    Serial.print(Z);
+    Serial.println();
+
+    //xStepper.step(stepsPerRevolution);
 }
 
-float* AnglesGyro1(int Delay) {
-  gyro1.update();
+float* AnglesGyro(int Delay) {
+  gyro.update();
   static float Gyro_array[3];
-  Gyro_array[0] = gyro1.getAngleX();
-  Gyro_array[1] = gyro1.getAngleY();
-  Gyro_array[2] = gyro1.getAngleZ();
-  delay(Delay);
-  return Gyro_array;
-}
-
-float* AnglesGyro2(int Delay) {
-  gyro2.update();
-  static float Gyro_array[3];
-  Gyro_array[0] = gyro2.getAngleX();
-  Gyro_array[1] = gyro2.getAngleY();
-  Gyro_array[2] = gyro2.getAngleZ();
+  Gyro_array[0] = gyro.getAngleX();
+  Gyro_array[1] = gyro.getAngleY();
+  Gyro_array[2] = gyro.getAngleZ();
   delay(Delay);
   return Gyro_array;
 }
