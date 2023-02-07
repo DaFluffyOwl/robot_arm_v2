@@ -10,6 +10,9 @@ float* coord_ptr;
 
 int Speed = 12;
 int X, Y, Z;
+int init_X;
+int delta_X;
+int delta_X_step;
 
 const int stepsPerRevolution = 2048;
 Stepper xStepper(stepsPerRevolution, 6, 10, 9, 11);
@@ -35,25 +38,38 @@ void setup() {
     Serial.begin(9600);
 
     Serial.println("Motor set");
+
+    Serial.println("Zeroing gyro");
+    coord_ptr = AnglesGyro(10);
+    init_X = *(coord_ptr);
 }
 
 void loop() {
 
-    coord_ptr = AnglesGyro(10);
+  coord_ptr = AnglesGyro(10);
 
-    Y = *(coord_ptr + 1);        // Pitch
-    X = *(coord_ptr);            // Yaw
-    Z = *(coord_ptr + 2);        // Roll 
+  Y = *(coord_ptr + 1);        // Pitch
+  X = *(coord_ptr);            // Yaw
+  Z = *(coord_ptr + 2);        // Roll 
+  
+  Serial.print("X: ");
+  Serial.print(X);
+  Serial.print("  Y: ");
+  Serial.print(Y);
+  Serial.print("  Z: ");
+  Serial.print(Z);
+  Serial.println();
 
-    Serial.print("X: ");
-    Serial.print(X);
-    Serial.print("  Y: ");
-    Serial.print(Y);
-    Serial.print("  Z: ");
-    Serial.print(Z);
-    Serial.println();
-
-    //xStepper.step(stepsPerRevolution);
+  delta_X = (X - init_X);
+  delta_X_step = map(delta_X, -180, 180, -2048, 2048);
+  if(abs(delta_X_step) > 10){
+    xStepper.step(delta_X_step);
+    Serial.print("Delta X: ");
+    Serial.println(delta_X_step);
+  }
+  coord_ptr = AnglesGyro(10);
+  X = *coord_ptr;
+  init_X = X;
 }
 
 float* AnglesGyro(int Delay) {
