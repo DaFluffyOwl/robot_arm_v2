@@ -62,12 +62,12 @@ void loop() {
 
   delta_X = (X - init_X);
   delta_X_step = map(delta_X, -180, 180, -2048, 2048);
-  if(abs(delta_X_step) > 10){
-    xStepper.step(delta_X_step);
-    Serial.print("Delta X: ");
-    Serial.println(delta_X_step);
-  }
+  
+  xStepper.step(delta_X_step);
+  Serial.print("Delta X: ");
+  Serial.println(delta_X_step);
   coord_ptr = AnglesGyro(10);
+
   X = *coord_ptr;
   init_X = X;
 }
