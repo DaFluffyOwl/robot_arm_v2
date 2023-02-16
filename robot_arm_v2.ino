@@ -10,12 +10,13 @@ float* coord_ptr;
 
 int Speed = 12;
 int X, Y, Z;
-int init_X;
-int delta_X;
-int delta_X_step;
+int init_X, init_Y;
+int dX, dY;
+int dX_s, dY_s;
 
 const int stepsPerRevolution = 2048;
-Stepper xStepper(stepsPerRevolution, 6, 10, 9, 11);
+Stepper xStepper(stepsPerRevolution, 9, 11, 10, 12);
+Stepper yStepper(stepsPerRevolution, 5, 7, 6, 8);
 
 
 
@@ -23,6 +24,7 @@ Stepper xStepper(stepsPerRevolution, 6, 10, 9, 11);
 void setup() {
 
     xStepper.setSpeed(Speed);
+    yStepper.setSpeed(Speed);
 
     pinMode(gyro_pin, OUTPUT);
     digitalWrite(gyro_pin, LOW);
@@ -42,6 +44,7 @@ void setup() {
     Serial.println("Zeroing gyro");
     coord_ptr = AnglesGyro(10);
     init_X = *(coord_ptr);
+    init_Y = *(coord_ptr + 1);
 }
 
 void loop() {
@@ -60,16 +63,29 @@ void loop() {
   Serial.print(Z);
   Serial.println();
 
-  delta_X = (X - init_X);
-  delta_X_step = map(delta_X, -180, 180, -2048, 2048);
+  dX = (X - init_X);
+  dX_s = map(dX, -180, 180, -2048, 2048);
   
-  xStepper.step(delta_X_step);
+  xStepper.step(dX_s);
   Serial.print("Delta X: ");
-  Serial.println(delta_X_step);
+  Serial.println(dX_s);
   coord_ptr = AnglesGyro(10);
 
   //X = *coord_ptr;
   init_X = X;
+
+
+  dY = (Y - init_Y);
+  dY_s = map(dY, -180, 180, -2048, 2048);
+  
+  yStepper.step(dY_s);
+  Serial.print("Delta Y: ");
+  Serial.println(dY_s);
+  coord_ptr = AnglesGyro(10);
+
+  //Y = *coord_ptr;
+  init_Y = Y;
+
 }
 
 float* AnglesGyro(int Delay) {
