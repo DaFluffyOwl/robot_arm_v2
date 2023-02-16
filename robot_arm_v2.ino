@@ -68,7 +68,7 @@ void loop() {
   Serial.println(delta_X_step);
   coord_ptr = AnglesGyro(10);
 
-  X = *coord_ptr;
+  //X = *coord_ptr;
   init_X = X;
 }
 
