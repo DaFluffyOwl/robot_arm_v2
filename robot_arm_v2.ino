@@ -10,13 +10,14 @@ float* coord_ptr;
 
 int Speed = 12;
 int X, Y, Z;
-int init_X, init_Y;
-int dX, dY;
-int dX_s, dY_s;
+int init_X, init_Y, init_Z;
+int dX, dY, dZ;
+int dX_s, dY_s, dZ_s;
 
 const int stepsPerRevolution = 2048;
 Stepper xStepper(stepsPerRevolution, 9, 11, 10, 12);
 Stepper yStepper(stepsPerRevolution, 5, 7, 6, 8);
+Stepper zStepper(stepsPerRevolution, 13, 3, 2, 4); 
 
 
 
@@ -52,8 +53,8 @@ void loop() {
   coord_ptr = AnglesGyro(10);
 
   Y = *(coord_ptr + 1);        // Pitch
-  X = *(coord_ptr);            // Yaw
-  Z = *(coord_ptr + 2);        // Roll 
+  X = *(coord_ptr);            // Roll
+  Z = *(coord_ptr + 2);        // Yaw
   
   Serial.print("X: ");
   Serial.print(X);
@@ -85,6 +86,15 @@ void loop() {
 
   //Y = *coord_ptr;
   init_Y = Y;
+
+
+  dZ = (Z - init_Z);
+  dZ_s = map(dZ, -180, 180, -2048, 2048);
+
+  zStepper.step(dZ_s);
+  Serial.print("Delta Z: ");
+  Serial.println(dZ_s);
+  coord_ptr = AnglesGyro(10);
 
 }
 
