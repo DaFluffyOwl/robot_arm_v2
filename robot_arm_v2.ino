@@ -26,6 +26,7 @@ void setup() {
 
     xStepper.setSpeed(Speed);
     yStepper.setSpeed(Speed);
+    zStepper.setSpeed(Speed);
 
     pinMode(gyro_pin, OUTPUT);
     digitalWrite(gyro_pin, LOW);
@@ -44,8 +45,10 @@ void setup() {
 
     Serial.println("Zeroing gyro");
     coord_ptr = AnglesGyro(10);
+
     init_X = *(coord_ptr);
     init_Y = *(coord_ptr + 1);
+    init_Z = *(coord_ptr + 2);
 }
 
 void loop() {
@@ -95,6 +98,8 @@ void loop() {
   Serial.print("Delta Z: ");
   Serial.println(dZ_s);
   coord_ptr = AnglesGyro(10);
+
+  init_Z = Z;
 
 }
 
