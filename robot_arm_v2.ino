@@ -15,14 +15,16 @@ int dX, dY, dZ;
 int dX_s, dY_s, dZ_s;
 
 const int stepsPerRevolution = 2048;
-Stepper xStepper(stepsPerRevolution, 9, 11, 10, 12);
-Stepper yStepper(stepsPerRevolution, 5, 7, 6, 8);
-Stepper zStepper(stepsPerRevolution, 13, 3, 2, 4); 
+Stepper xStepper(stepsPerRevolution, 22, 26, 24, 28);
+Stepper yStepper(stepsPerRevolution, 30, 34, 32, 36);
+Stepper zStepper(stepsPerRevolution, 38, 42, 40, 44); 
 
 
 
 
 void setup() {
+  
+    Serial.begin(115200);
 
     xStepper.setSpeed(Speed);
     yStepper.setSpeed(Speed);
@@ -39,7 +41,7 @@ void setup() {
     Serial.println("Done!");
 
     Wire.begin();
-    Serial.begin(9600);
+
 
     Serial.println("Motor set");
 
@@ -75,7 +77,6 @@ void loop() {
   Serial.println(dX_s);
   coord_ptr = AnglesGyro(10);
 
-  //X = *coord_ptr;
   init_X = X;
 
 
@@ -87,7 +88,6 @@ void loop() {
   Serial.println(dY_s);
   coord_ptr = AnglesGyro(10);
 
-  //Y = *coord_ptr;
   init_Y = Y;
 
 
