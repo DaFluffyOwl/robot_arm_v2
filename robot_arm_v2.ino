@@ -10,19 +10,25 @@ float* coord_ptr;
 
 int Speed = 12;
 int X, Y, Z;
-int init_X;
-int delta_X;
-int delta_X_step;
+int init_X, init_Y, init_Z;
+int dX, dY, dZ;
+int dX_s, dY_s, dZ_s;
 
 const int stepsPerRevolution = 2048;
-Stepper xStepper(stepsPerRevolution, 6, 10, 9, 11);
+Stepper xStepper(stepsPerRevolution, 22, 26, 24, 28);
+Stepper yStepper(stepsPerRevolution, 30, 34, 32, 36);
+Stepper zStepper(stepsPerRevolution, 38, 42, 40, 44); 
 
 
 
 
 void setup() {
+  
+    Serial.begin(115200);
 
     xStepper.setSpeed(Speed);
+    yStepper.setSpeed(Speed);
+    zStepper.setSpeed(Speed);
 
     pinMode(gyro_pin, OUTPUT);
     digitalWrite(gyro_pin, LOW);
@@ -35,13 +41,16 @@ void setup() {
     Serial.println("Done!");
 
     Wire.begin();
-    Serial.begin(9600);
+
 
     Serial.println("Motor set");
 
     Serial.println("Zeroing gyro");
     coord_ptr = AnglesGyro(10);
+
     init_X = *(coord_ptr);
+    init_Y = *(coord_ptr + 1);
+    init_Z = *(coord_ptr + 2);
 }
 
 void loop() {
@@ -49,8 +58,8 @@ void loop() {
   coord_ptr = AnglesGyro(10);
 
   Y = *(coord_ptr + 1);        // Pitch
-  X = *(coord_ptr);            // Yaw
-  Z = *(coord_ptr + 2);        // Roll 
+  X = *(coord_ptr);            // Roll
+  Z = *(coord_ptr + 2);        // Yaw
   
   Serial.print("X: ");
   Serial.print(X);
@@ -60,16 +69,38 @@ void loop() {
   Serial.print(Z);
   Serial.println();
 
-  delta_X = (X - init_X);
-  delta_X_step = map(delta_X, -180, 180, -2048, 2048);
+  dX = (X - init_X);
+  dX_s = map(dX, -180, 180, -2048, 2048);
   
-  xStepper.step(delta_X_step);
+  xStepper.step(dX_s);
   Serial.print("Delta X: ");
-  Serial.println(delta_X_step);
+  Serial.println(dX_s);
   coord_ptr = AnglesGyro(10);
 
-  //X = *coord_ptr;
   init_X = X;
+
+
+  dY = (Y - init_Y);
+  dY_s = map(dY, -180, 180, -2048, 2048);
+  
+  yStepper.step(dY_s);
+  Serial.print("Delta Y: ");
+  Serial.println(dY_s);
+  coord_ptr = AnglesGyro(10);
+
+  init_Y = Y;
+
+
+  dZ = (Z - init_Z);
+  dZ_s = map(dZ, -180, 180, -2048, 2048);
+
+  zStepper.step(dZ_s);
+  Serial.print("Delta Z: ");
+  Serial.println(dZ_s);
+  coord_ptr = AnglesGyro(10);
+
+  init_Z = Z;
+
 }
 
 float* AnglesGyro(int Delay) {
