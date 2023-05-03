@@ -14,11 +14,16 @@ int init_X, init_Y, init_Z;
 int dX, dY, dZ;
 int dX_s, dY_s, dZ_s;
 
+int xbound = 512, ybound = 512, zbound = 512;
+int xsteps, ysteps, zsteps;
+
 const int stepsPerRevolution = 2048;
 Stepper xStepper(stepsPerRevolution, 22, 26, 24, 28);
 Stepper yStepper(stepsPerRevolution, 30, 34, 32, 36);
 Stepper zStepper(stepsPerRevolution, 38, 42, 40, 44); 
 
+
+int switchpin = 0;
 
 
 
@@ -55,6 +60,10 @@ void setup() {
 
 void loop() {
 
+  while(digitalRead(switchpin)){
+    
+  }
+
   coord_ptr = AnglesGyro(10);
 
   Y = *(coord_ptr + 1);        // Pitch
@@ -72,6 +81,10 @@ void loop() {
   dX = (X - init_X);
   dX_s = map(dX, -180, 180, -2048, 2048);
   
+  xsteps += dX_s;
+  if(xsteps > xbound || xsteps < -(xbound)){
+    dX_s = 0;
+  }
   xStepper.step(dX_s);
   Serial.print("Delta X: ");
   Serial.println(dX_s);
@@ -80,6 +93,10 @@ void loop() {
   init_X = X;
 
 
+  ysteps += dY_s;
+  if(ysteps > ybound || ysteps < -(ybound)){
+    dY_s = 0;
+  }
   dY = (Y - init_Y);
   dY_s = map(dY, -180, 180, -2048, 2048);
   
@@ -91,6 +108,10 @@ void loop() {
   init_Y = Y;
 
 
+  zsteps += dZ_s;
+  if(zsteps > zbound || zsteps < -(zbound)){
+    dZ_s = 0;
+  }
   dZ = (Z - init_Z);
   dZ_s = map(dZ, -180, 180, -2048, 2048);
 
