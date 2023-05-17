@@ -18,18 +18,28 @@ int xbound = 512, ybound = 512, zbound = 512;
 int xsteps, ysteps, zsteps;
 
 const int stepsPerRevolution = 2048;
-Stepper xStepper(stepsPerRevolution, 22, 26, 24, 28);
+//Stepper xStepper(stepsPerRevolution, 22, 26, 24, 28);
+Stepper xStepper(stepsPerRevolution, 2, 4, 3, 5);
 Stepper yStepper(stepsPerRevolution, 30, 34, 32, 36);
 Stepper zStepper(stepsPerRevolution, 38, 42, 40, 44); 
 
 
 int switchpin = 0;
+int joy_x, joy_y;
+int map_joy_x, map_joy_y;
+int pot_z;
+int map_pot_z;
 
 
 
 void setup() {
   
-    Serial.begin(115200);
+    Serial.begin(9600);
+
+    pinMode(switchpin, INPUT);
+    pinMode(joy_x, INPUT);
+    pinMode(joy_y, INPUT);
+    pinMode(pot_z, INPUT);
 
     xStepper.setSpeed(Speed);
     yStepper.setSpeed(Speed);
@@ -61,7 +71,14 @@ void setup() {
 void loop() {
 
   while(digitalRead(switchpin)){
-    
+    map_joy_x = map(analogRead(joy_x), -512, 512, -10, 10);
+    xStepper.step(map_joy_x);
+
+    map_joy_y = map(analogRead(joy_y), -512, 512, -10, 10);
+    yStepper.step(map_joy_y);
+
+    map_pot_z = map(analogRead(pot_z), 0, 1024, -10, 10);
+    zStepper.step(map_pot_z);      
   }
 
   coord_ptr = AnglesGyro(10);
@@ -81,10 +98,10 @@ void loop() {
   dX = (X - init_X);
   dX_s = map(dX, -180, 180, -2048, 2048);
   
-  xsteps += dX_s;
-  if(xsteps > xbound || xsteps < -(xbound)){
+  //xsteps += dX_s;
+  /*if(xsteps > xbound || xsteps < -(xbound)){
     dX_s = 0;
-  }
+  }*/
   xStepper.step(dX_s);
   Serial.print("Delta X: ");
   Serial.println(dX_s);

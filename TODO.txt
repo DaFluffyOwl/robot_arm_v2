@@ -1,3 +1,4 @@
  - Prevent the Motor from being able to collide with itself
     - Indclude functionality to allow the user to calibrate the arm, setting it into a beginning position for the arm to move based on that refrence
     - Prevent the arm from moving outside of certain bounds
+    - Allow the arm to be controlled using a joy stick and potentiometer
